@@ -6,6 +6,8 @@ commands:
   replied-to-ticket: "&aYou have successfully replied to the ticket with id %d."
   ticket-closed: "&aYou have successfully closed the ticket with id %d."
   no-reply-with-that-id: "&7No reply."
+  no-replier-with-that-id: "&7No replier."
+  no-date-for-that-reply: "&7No date."
 
 # How many second after the ticket should state as not new.
 expiration-time: 10

@@ -71,6 +71,8 @@ public class MainCommands {
 		}
 
 		var reply = String.join(" ", arguments.getArguments());
+		reply = reply.concat(":" + player.getName());
+		reply = reply.concat(":" + System.currentTimeMillis());
 		ticket.getReplies().add(reply);
 
 		var config = ConfigUtils.getConfig(plugin, "tickets");

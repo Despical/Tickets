@@ -14,7 +14,7 @@ import java.util.UUID;
 public class Ticket {
 
 	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
-	private static final DateFormat formatter = new SimpleDateFormat(plugin.getConfig().getString("date-format"));
+	public static final DateFormat formatter = new SimpleDateFormat(plugin.getConfig().getString("date-format"));
 
 	private final String uuid, message;
 	private final long creationDate;

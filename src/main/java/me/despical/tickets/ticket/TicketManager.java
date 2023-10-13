@@ -34,6 +34,19 @@ public class TicketManager {
 
 		config.set("tickets.%d.number".formatted(ticket.getId()), ticket.getNumber());
 
+		for (int i = 0; i < closedTickets.size() / 2; i++) {
+			var indexTicket = closedTickets.get(i);
+			var j = indexTicket.getNumber();
+
+			indexTicket.setNumber(closedTickets.get(closedTickets.size() - i - 1).getNumber());
+
+			var swappedTicket = closedTickets.get(closedTickets.size() - i - 1);
+			swappedTicket.setNumber(j);
+
+			config.set("tickets.%d.number".formatted(indexTicket.getId()), indexTicket.getNumber());
+			config.set("tickets.%d.number".formatted(swappedTicket.getId()), j);
+		}
+
 		int missingNumber = findMissingNumber();
 
 		for (var entryTicket : this.tickets) {

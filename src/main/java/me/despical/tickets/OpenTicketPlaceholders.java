@@ -2,6 +2,7 @@ package me.despical.tickets;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.despical.commons.util.Strings;
+import me.despical.tickets.ticket.Ticket;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -55,7 +56,22 @@ public class OpenTicketPlaceholders extends PlaceholderExpansion {
 			case "reply" -> {
 				var replyId = Integer.parseInt(split[2]);
 
-				yield Strings.format(replyId <= ticket.getReplies().size() ? ticket.getReplies().get(replyId - 1) : plugin.getConfig().getString("commands.no-reply-with-that-id"));
+				if (split.length == 3) {
+
+					yield Strings.format(replyId <= ticket.getReplies().size() ? ticket.getReplies().get(replyId - 1).split(":")[0] : plugin.getConfig().getString("commands.no-reply-with-that-id"));
+				}
+
+				var _3rd = split[3];
+
+				if (_3rd.equalsIgnoreCase("name")) {
+					yield Strings.format(replyId <= ticket.getReplies().size() ? ticket.getReplies().get(replyId - 1).split(":")[1] : plugin.getConfig().getString("commands.no-replier-with-that-id"));
+				}
+
+				if (_3rd.equalsIgnoreCase("timedate")) {
+					yield Strings.format(replyId <= ticket.getReplies().size() ? Ticket.formatter.format(Long.parseLong(ticket.getReplies().get(replyId - 1).split(":")[2])) : plugin.getConfig().getString("commands.no-date-for-that-reply"));
+				}
+
+				yield null;
 			}
 
 			default -> null;

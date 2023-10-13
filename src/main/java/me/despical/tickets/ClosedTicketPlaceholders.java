@@ -55,7 +55,18 @@ public class ClosedTicketPlaceholders extends PlaceholderExpansion {
 			case "reply" -> {
 				var replyId = Integer.parseInt(split[2]);
 
-				yield Strings.format(replyId <= ticket.getReplies().size() ? ticket.getReplies().get(replyId - 1) : plugin.getConfig().getString("commands.no-reply-with-that-id"));
+				if (split.length == 3) {
+
+					yield Strings.format(replyId <= ticket.getReplies().size() ? ticket.getReplies().get(replyId - 1).split(":")[0] : plugin.getConfig().getString("commands.no-reply-with-that-id"));
+				}
+
+				var _3rd = split[3];
+
+				if (_3rd.equalsIgnoreCase("name")) {
+					yield Strings.format(replyId <= ticket.getReplies().size() ? ticket.getReplies().get(replyId - 1).split(":")[1] : plugin.getConfig().getString("commands.no-replier-with-that-id"));
+				}
+
+				yield null;
 			}
 
 			default -> null;
