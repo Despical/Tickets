@@ -30,6 +30,16 @@ public class MainCommands {
 	}
 
 	@Command(
+		name = "omcticket.reload",
+		permission = "omcticket.admin"
+	)
+	public void reloadCommand(CommandArguments arguments) {
+		plugin.reloadConfig();
+
+		arguments.sendMessage("Config reloaded.");
+	}
+
+	@Command(
 		name = "omcticket.create",
 		usage = "/omcticket create <message>",
 		allowInfiniteArgs = true,
