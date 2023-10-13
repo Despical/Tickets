@@ -16,7 +16,7 @@ public class Ticket {
 	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
 	public static final DateFormat formatter = new SimpleDateFormat(plugin.getConfig().getString("date-format"));
 
-	private final String uuid, message;
+	private final String uuid, message, randomId;
 	private final long creationDate;
 	private final int id;
 
@@ -25,22 +25,28 @@ public class Ticket {
 	private boolean closed;
 	private List<String> replies;
 
-	public Ticket(Player owner, String message, int number, int id) {
+	public Ticket(Player owner, String message, String randomId, int number, int id) {
 		this.uuid = owner.getUniqueId().toString();
 		this.message = message;
+		this.randomId = randomId;
 		this.creationDate = System.currentTimeMillis();
 		this.number = number;
 		this.replies = new ArrayList<>();
 		this.id = id;
 	}
 
-	public Ticket(String uuid, String message, long creationDate, int number, int id) {
+	public Ticket(String uuid, String message, String randomId, long creationDate, int number, int id) {
 		this.uuid = uuid;
 		this.message = message;
+		this.randomId = randomId;
 		this.creationDate = creationDate;
 		this.number = number;
 		this.id = id;
 		this.replies = new ArrayList<>();
+	}
+
+	public String getRandomId() {
+		return randomId;
 	}
 
 	public UUID getUUID() {

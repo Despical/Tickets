@@ -54,7 +54,7 @@ public class MainCommands {
 		}
 
 		var ticketManager = plugin.getTicketManager();
-		var ticket = new Ticket(player, String.join(" ", arguments.getArguments()), ticketManager.getNextNumber(), ticketManager.getAvailableId());
+		var ticket = new Ticket(player, String.join(" ", arguments.getArguments()), ticketManager.getRandomId(), ticketManager.getNextNumber(), ticketManager.getAvailableId());
 		ticketManager.addTicket(ticket);
 		ticketManager.saveTicket(ticket);
 

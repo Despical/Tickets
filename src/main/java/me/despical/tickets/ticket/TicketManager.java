@@ -6,8 +6,12 @@ import me.despical.tickets.Main;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 public class TicketManager {
+
+	private static final String CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 	private final Main plugin;
 	private final int expirationTime;
@@ -109,6 +113,7 @@ public class TicketManager {
 		config.set(path + "creationDate", ticket.getCreationTime());
 		config.set(path + "message", ticket.getMessage());
 		config.set(path + "uuid", ticket.getUUID().toString());
+		config.set(path + "randomId", ticket.getRandomId());
 		config.set(path + "number", ticket.getNumber());
 		config.set(path + "closed", ticket.isClosed());
 		config.set(path + "closingDate", ticket.getClosingTime());
@@ -140,6 +145,20 @@ public class TicketManager {
 		return ticketList.get(ticketList.size() - 1) + 1;
 	}
 
+	public String getRandomId() {
+		StringBuilder builder = new StringBuilder();
+
+		for (int i = 0; i++ < 6;) {
+			builder.append(CHARS.charAt(ThreadLocalRandom.current().nextInt(36)));
+		}
+
+		if (getTickets().stream().map(Ticket::getRandomId).toList().contains(builder.toString())) {
+			return getRandomId();
+		}
+
+		return builder.toString();
+	}
+
 	private void loadTickets() {
 		var config = ConfigUtils.getConfig(plugin, "tickets");
 		var section = config.getConfigurationSection("tickets");
@@ -151,9 +170,10 @@ public class TicketManager {
 			var creationDate = config.getLong(path + "creationDate");
 			var message = config.getString(path + "message");
 			var uuid = config.getString(path + "uuid");
+			var randomId = config.getString(path + "randomId");
 			var number = config.getInt(path + "number");
 			var id = Integer.parseInt(ticketName);
-			var ticket = new Ticket(uuid, message, creationDate, number, id);
+			var ticket = new Ticket(uuid, message, randomId, creationDate, number, id);
 
 			ticket.setClosed(config.getBoolean(path + "closed"));
 			ticket.setClosingTime(config.getLong(path + "closingDate"));
