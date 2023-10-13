@@ -1,0 +1,18 @@
+commands:
+  create-usage: "&cYou can not create a ticket without the message!"
+  main-command-usage: "&c/omcticket create <message>"
+  created-ticket: "&aYou have successfully created a ticket with id %d."
+  no-ticket-found: "&cNo ticket found with that id %d!"
+  replied-to-ticket: "&aYou have successfully replied to the ticket with id %d."
+  ticket-closed: "&aYou have successfully closed the ticket with id %d."
+  no-reply-with-that-id: "&7No reply."
+
+# How many second after the ticket should state as not new.
+expiration-time: 10
+
+ticket-status:
+  new: "&e&lNew"
+  open: "&aOpen"
+  closed: "&cClosed"
+
+date-format: "MM/dd/yyyy"

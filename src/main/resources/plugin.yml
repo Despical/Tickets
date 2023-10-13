@@ -1,0 +1,6 @@
+name: Tickets
+api-version: 1.13
+author: Despical
+version: ${project.version}
+main: me.despical.tickets.Main
+depend: [ PlaceholderAPI ]
