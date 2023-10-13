@@ -14,127 +14,127 @@ import java.util.List;
 
 public class MainCommands {
 
-    private final Main plugin;
+	private final Main plugin;
 
-    public MainCommands(Main plugin) {
-        this.plugin = plugin;
-        this.plugin.getCommandFramework().registerCommands(this);
-    }
+	public MainCommands(Main plugin) {
+		this.plugin = plugin;
+		this.plugin.getCommandFramework().registerCommands(this);
+	}
 
-    @Command(
-            name = "omcticket",
-            senderType = Command.SenderType.PLAYER
-    )
-    public void mainCommand(CommandArguments arguments) {
-        sendMessage(arguments.getSender(), "commands.main-command-usage");
-    }
+	@Command(
+		name = "omcticket",
+		senderType = Command.SenderType.PLAYER
+	)
+	public void mainCommand(CommandArguments arguments) {
+		sendMessage(arguments.getSender(), "commands.main-command-usage");
+	}
 
-    @Command(
-            name = "omcticket.create",
-            usage = "/omcticket create <message>",
-            allowInfiniteArgs = true,
-            senderType = Command.SenderType.PLAYER
-    )
-    public void createCommand(CommandArguments arguments) {
-        Player player = arguments.getSender();
+	@Command(
+		name = "omcticket.create",
+		usage = "/omcticket create <message>",
+		allowInfiniteArgs = true,
+		senderType = Command.SenderType.PLAYER
+	)
+	public void createCommand(CommandArguments arguments) {
+		Player player = arguments.getSender();
 
-        if (arguments.isArgumentsEmpty()) {
-            sendMessage(player, "commands.create-usage");
-            return;
-        }
+		if (arguments.isArgumentsEmpty()) {
+			sendMessage(player, "commands.create-usage");
+			return;
+		}
 
-        var ticketManager = plugin.getTicketManager();
-        var ticket = new Ticket(player, String.join(" ", arguments.getArguments()), ticketManager.getNextNumber(), ticketManager.getAvailableId());
-        ticketManager.addTicket(ticket);
-        ticketManager.saveTicket(ticket);
+		var ticketManager = plugin.getTicketManager();
+		var ticket = new Ticket(player, String.join(" ", arguments.getArguments()), ticketManager.getNextNumber(), ticketManager.getAvailableId());
+		ticketManager.addTicket(ticket);
+		ticketManager.saveTicket(ticket);
 
-        sendMessage(player, "commands.created-ticket", ticket.getNumber());
-    }
+		sendMessage(player, "commands.created-ticket", ticket.getNumber());
+	}
 
-    @Command(
-            name = "omcticket.reply",
-            permission = "omcticket.admin",
-            usage = "/omcticket reply <number> <message>",
-            allowInfiniteArgs = true,
-            min = 2,
-            senderType = Command.SenderType.PLAYER
-    )
-    public void replyCommand(CommandArguments arguments) {
-        Player player = arguments.getSender();
+	@Command(
+		name = "omcticket.reply",
+		permission = "omcticket.admin",
+		usage = "/omcticket reply <number> <message>",
+		allowInfiniteArgs = true,
+		min = 2,
+		senderType = Command.SenderType.PLAYER
+	)
+	public void replyCommand(CommandArguments arguments) {
+		Player player = arguments.getSender();
 
-        var ticketNumber = arguments.getArgumentAsInt(0);
-        var ticket = plugin.getTicketManager().getTicketFromId(ticketNumber);
+		var ticketNumber = arguments.getArgumentAsInt(0);
+		var ticket = plugin.getTicketManager().getTicketFromId(ticketNumber);
 
-        if (ticket == null) {
-            sendMessage(player, "commands.no-ticket-found", ticketNumber);
-            return;
-        }
+		if (ticket == null) {
+			sendMessage(player, "commands.no-ticket-found", ticketNumber);
+			return;
+		}
 
-        var reply = String.join(" ", arguments.getArguments());
-        ticket.getReplies().add(reply);
+		var reply = String.join(" ", arguments.getArguments());
+		ticket.getReplies().add(reply);
 
-        var config = ConfigUtils.getConfig(plugin, "tickets");
-        config.set("tickets.%d.replies".formatted(ticket.getId()), ticket.getReplies());
-        ConfigUtils.saveConfig(plugin, config, "tickets");
+		var config = ConfigUtils.getConfig(plugin, "tickets");
+		config.set("tickets.%d.replies".formatted(ticket.getId()), ticket.getReplies());
+		ConfigUtils.saveConfig(plugin, config, "tickets");
 
-        sendMessage(player, "commands.replied-to-ticket", ticket.getId());
-    }
+		sendMessage(player, "commands.replied-to-ticket", ticket.getId());
+	}
 
-    @Command(
-            name = "omcticket.close",
-            permission = "omcticket.admin",
-            usage = "/omcticket closeticket <number>",
-            allowInfiniteArgs = true,
-            min = 1,
-            senderType = Command.SenderType.PLAYER
-    )
-    public void closeCommand(CommandArguments arguments) {
-        Player player = arguments.getSender();
+	@Command(
+		name = "omcticket.close",
+		permission = "omcticket.admin",
+		usage = "/omcticket closeticket <number>",
+		allowInfiniteArgs = true,
+		min = 1,
+		senderType = Command.SenderType.PLAYER
+	)
+	public void closeCommand(CommandArguments arguments) {
+		Player player = arguments.getSender();
 
-        var ticketNumber = arguments.getArgumentAsInt(0);
-        var ticket = plugin.getTicketManager().getTicketFromId(ticketNumber);
+		var ticketNumber = arguments.getArgumentAsInt(0);
+		var ticket = plugin.getTicketManager().getTicketFromId(ticketNumber);
 
-        if (ticket == null) {
-            sendMessage(player, "commands.no-ticket-found", ticketNumber);
-            return;
-        }
+		if (ticket == null) {
+			sendMessage(player, "commands.no-ticket-found", ticketNumber);
+			return;
+		}
 
-        ticket.setClosed(true);
-        ticket.setClosingTime(System.currentTimeMillis());
+		ticket.setClosed(true);
+		ticket.setClosingTime(System.currentTimeMillis());
 
-        var config = ConfigUtils.getConfig(plugin, "tickets");
-        var path = "tickets.%d.".formatted(ticket.getId());
-        config.set(path + "closed", true);
-        config.set(path + "closingDate", ticket.getClosingTime());
-        ConfigUtils.saveConfig(plugin, config, "tickets");
+		var config = ConfigUtils.getConfig(plugin, "tickets");
+		var path = "tickets.%d.".formatted(ticket.getId());
+		config.set(path + "closed", true);
+		config.set(path + "closingDate", ticket.getClosingTime());
+		ConfigUtils.saveConfig(plugin, config, "tickets");
 
-        sendMessage(player, "commands.ticket-closed", ticket.getId());
-    }
+		sendMessage(player, "commands.ticket-closed", ticket.getId());
+	}
 
-    @Completer(
-            name = "omcticket"
-    )
-    public List<String> tabCompleter(CommandArguments arguments) {
-        if (!arguments.hasPermission("omcticket.admin")) return null;
+	@Completer(
+		name = "omcticket"
+	)
+	public List<String> tabCompleter(CommandArguments arguments) {
+		if (!arguments.hasPermission("omcticket.admin")) return null;
 
-        var arg = arguments.getArgument(0);
+		var arg = arguments.getArgument(0);
 
-        if (arg == null) return null;
+		if (arg == null) return null;
 
-        if (arg.equalsIgnoreCase("reply") || arg.equalsIgnoreCase("close") && arguments.getArgumentsLength() == 2)
-                return plugin.getTicketManager().getTickets().stream().map(ticket -> String.valueOf(ticket.getNumber())).toList();
+		if (arg.equalsIgnoreCase("reply") || arg.equalsIgnoreCase("close") && arguments.getArgumentsLength() == 2)
+			return plugin.getTicketManager().getTickets().stream().map(ticket -> String.valueOf(ticket.getNumber())).toList();
 
-        if (arguments.getArgumentsLength() == 1)
-            return List.of("create", "reply", "close");
+		if (arguments.getArgumentsLength() == 1)
+			return List.of("create", "reply", "close");
 
-        return null;
-    }
+		return null;
+	}
 
-    private void sendMessage(CommandSender sender, String path, Object... objects) {
-        var message = plugin.getConfig().getString(path);
+	private void sendMessage(CommandSender sender, String path, Object... objects) {
+		var message = plugin.getConfig().getString(path);
 
-        if (message.contains("%")) message = message.formatted(objects);
+		if (message.contains("%")) message = message.formatted(objects);
 
-        sender.sendMessage(Strings.format(message));
-    }
+		sender.sendMessage(Strings.format(message));
+	}
 }

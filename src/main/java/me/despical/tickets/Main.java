@@ -9,34 +9,34 @@ import java.io.File;
 
 public class Main extends JavaPlugin {
 
-    private CommandFramework commandFramework;
-    private TicketManager ticketManager;
+	private CommandFramework commandFramework;
+	private TicketManager ticketManager;
 
-    @Override
-    public void onEnable() {
-        setupFiles();
+	@Override
+	public void onEnable() {
+		setupFiles();
 
-        commandFramework = new CommandFramework(this);
-        ticketManager = new TicketManager(this);
+		commandFramework = new CommandFramework(this);
+		ticketManager = new TicketManager(this);
 
-        new MainCommands(this);
-        new OpenTicketPlaceholders(this);
-        new ClosedTicketPlaceholders(this);
-    }
+		new MainCommands(this);
+		new OpenTicketPlaceholders(this);
+		new ClosedTicketPlaceholders(this);
+	}
 
-    private void setupFiles() {
-        this.saveDefaultConfig();
+	private void setupFiles() {
+		this.saveDefaultConfig();
 
-        if (!new File(getDataFolder(),"tickets.yml").exists()) {
-            saveResource("tickets.yml", false);
-        }
-    }
+		if (!new File(getDataFolder(), "tickets.yml").exists()) {
+			saveResource("tickets.yml", false);
+		}
+	}
 
-    public CommandFramework getCommandFramework() {
-        return commandFramework;
-    }
+	public CommandFramework getCommandFramework() {
+		return commandFramework;
+	}
 
-    public TicketManager getTicketManager() {
-        return ticketManager;
-    }
+	public TicketManager getTicketManager() {
+		return ticketManager;
+	}
 }
