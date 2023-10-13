@@ -11,12 +11,13 @@ public class TicketManager {
 
 	private final Main plugin;
 	private final int expirationTime;
-	private final List<Ticket> tickets;
+	private final List<Ticket> tickets, closedTickets;
 
 	public TicketManager(Main plugin) {
 		this.plugin = plugin;
 		this.expirationTime = plugin.getConfig().getInt("expiration-time");
 		this.tickets = new ArrayList<>();
+		this.closedTickets = new ArrayList<>();
 		this.loadTickets();
 	}
 
@@ -24,8 +25,43 @@ public class TicketManager {
 		tickets.add(ticket);
 	}
 
+	public void removeTicketAndDownshift(Ticket ticket) {
+		if (!tickets.remove(ticket)) return;
+
+		var config = ConfigUtils.getConfig(plugin, "tickets");
+		ticket.setNumber(getNextClosedTicketNumber());
+		closedTickets.add(ticket);
+
+		config.set("tickets.%d.number".formatted(ticket.getId()), ticket.getNumber());
+
+		int missingNumber = findMissingNumber();
+
+		for (var entryTicket : this.tickets) {
+			if (missingNumber == -1) break;
+			if (entryTicket.getNumber() == 1) continue;
+			if (entryTicket.getNumber() < missingNumber) continue;
+
+			missingNumber = findMissingNumber();
+
+			var number = entryTicket.getNumber() - 1;
+
+			config.set("tickets.%d.number".formatted(entryTicket.getId()), number);
+
+			entryTicket.setNumber(number);
+		}
+
+		ConfigUtils.saveConfig(plugin, config, "tickets");
+	}
+
 	public List<Ticket> getTickets() {
-		return tickets;
+		var allTickets = new ArrayList<>(this.tickets);
+		allTickets.addAll(this.closedTickets);
+
+		return allTickets;
+	}
+
+	public Ticket getClosedTicketFromId(int id) {
+		return closedTickets.stream().filter(ticket -> ticket.getNumber() == id).findFirst().orElse(null);
 	}
 
 	public Ticket getTicketFromId(int id) {
@@ -74,6 +110,12 @@ public class TicketManager {
 		return tickets.get(tickets.size() - 1).getNumber() + 1;
 	}
 
+	public int getNextClosedTicketNumber() {
+		if (closedTickets.isEmpty()) return 1;
+
+		return closedTickets.get(closedTickets.size() - 1).getNumber() + 1;
+	}
+
 	public int getAvailableId() {
 		var config = ConfigUtils.getConfig(plugin, "tickets");
 		var section = config.getConfigurationSection("tickets");
@@ -103,7 +145,23 @@ public class TicketManager {
 			ticket.setClosed(config.getBoolean(path + "closed"));
 			ticket.setClosingTime(config.getLong(path + "closingDate"));
 			ticket.setReply(config.getStringList(path + "replies"));
-			this.tickets.add(ticket);
+
+			if (ticket.isClosed()) {
+				closedTickets.add(ticket);
+				continue;
+			}
+
+			tickets.add(ticket);
 		}
+	}
+
+	private int findMissingNumber() {
+		var list = this.tickets.stream().map(Ticket::getNumber).toList();
+
+		for (int i = 1; i <= list.size(); i++) {
+			if (!list.contains(i)) return i;
+		}
+
+		return -1;
 	}
 }

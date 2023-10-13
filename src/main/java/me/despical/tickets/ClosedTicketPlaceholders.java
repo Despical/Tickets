@@ -43,7 +43,7 @@ public class ClosedTicketPlaceholders extends PlaceholderExpansion {
 		if (player == null) return null;
 
 		var split = id.split(":");
-		var ticket = plugin.getTicketManager().getTicketFromId(Integer.parseInt(split[0]));
+		var ticket = plugin.getTicketManager().getClosedTicketFromId(Integer.parseInt(split[0]));
 
 		if (ticket == null || !ticket.isClosed()) return "";
 

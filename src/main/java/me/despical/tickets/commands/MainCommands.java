@@ -77,7 +77,7 @@ public class MainCommands {
 		config.set("tickets.%d.replies".formatted(ticket.getId()), ticket.getReplies());
 		ConfigUtils.saveConfig(plugin, config, "tickets");
 
-		sendMessage(player, "commands.replied-to-ticket", ticket.getId());
+		sendMessage(player, "commands.replied-to-ticket", ticket.getNumber());
 	}
 
 	@Command(
@@ -102,13 +102,15 @@ public class MainCommands {
 		ticket.setClosed(true);
 		ticket.setClosingTime(System.currentTimeMillis());
 
+		sendMessage(player, "commands.ticket-closed", ticket.getNumber());
+
+		plugin.getTicketManager().removeTicketAndDownshift(ticket);
+
 		var config = ConfigUtils.getConfig(plugin, "tickets");
 		var path = "tickets.%d.".formatted(ticket.getId());
 		config.set(path + "closed", true);
 		config.set(path + "closingDate", ticket.getClosingTime());
 		ConfigUtils.saveConfig(plugin, config, "tickets");
-
-		sendMessage(player, "commands.ticket-closed", ticket.getId());
 	}
 
 	@Completer(
@@ -121,8 +123,13 @@ public class MainCommands {
 
 		if (arg == null) return null;
 
-		if (arg.equalsIgnoreCase("reply") || arg.equalsIgnoreCase("close") && arguments.getArgumentsLength() == 2)
-			return plugin.getTicketManager().getTickets().stream().map(ticket -> String.valueOf(ticket.getNumber())).toList();
+		if (arguments.getArgumentsLength() == 2) {
+			if (arg.equalsIgnoreCase("reply"))
+				return plugin.getTicketManager().getTickets().stream().map(ticket -> String.valueOf(ticket.getNumber())).toList();
+
+			if (arg.equalsIgnoreCase("close"))
+				return plugin.getTicketManager().getTickets().stream().filter(ticket -> !ticket.isClosed()).map(ticket -> String.valueOf(ticket.getNumber())).toList();
+		}
 
 		if (arguments.getArgumentsLength() == 1)
 			return List.of("create", "reply", "close");

@@ -18,8 +18,9 @@ public class Ticket {
 
 	private final String uuid, message;
 	private final long creationDate;
-	private final int id, number;
+	private final int id;
 
+	private int number;
 	private long closingTime;
 	private boolean closed;
 	private List<String> replies;
@@ -66,6 +67,10 @@ public class Ticket {
 
 	public int getNumber() {
 		return number;
+	}
+
+	public void setNumber(int number) {
+		this.number = number;
 	}
 
 	public List<String> getReplies() {
