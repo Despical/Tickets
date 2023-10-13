@@ -45,7 +45,7 @@ public class OpenTicketPlaceholders extends PlaceholderExpansion {
 		var split = id.split(":");
 		var ticket = plugin.getTicketManager().getTicketFromId(Integer.parseInt(split[0]));
 
-		if (ticket == null) return "";
+		if (ticket == null || ticket.isClosed()) return "";
 
 		return switch (split[1].toLowerCase()) {
 			case "ticketowner" -> plugin.getServer().getOfflinePlayer(ticket.getUUID()).getName();
