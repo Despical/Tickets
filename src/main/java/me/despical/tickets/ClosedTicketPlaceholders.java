@@ -53,6 +53,7 @@ public class ClosedTicketPlaceholders extends PlaceholderExpansion {
 			case "ticket" -> Strings.format(ticket.getMessage());
 			case "id" -> ticket.getRandomId();
 			case "mmddyyy" -> ticket.getClosingDate();
+			case "closedcount" -> Integer.toString(plugin.getTicketManager().getClosedTickets().size());
 			case "reply" -> {
 				var replyId = Integer.parseInt(split[2]);
 

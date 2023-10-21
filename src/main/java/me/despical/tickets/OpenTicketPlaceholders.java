@@ -54,6 +54,7 @@ public class OpenTicketPlaceholders extends PlaceholderExpansion {
 			case "ticket" -> Strings.format(ticket.getMessage());
 			case "id" -> ticket.getRandomId();
 			case "mmddyyy" -> ticket.getCreationDate();
+			case "opencount" -> Integer.toString(plugin.getTicketManager().getOpenedTickets().size());
 			case "reply" -> {
 				var replyId = Integer.parseInt(split[2]);
 

@@ -77,6 +77,14 @@ public class TicketManager {
 		return allTickets;
 	}
 
+	public List<Ticket> getClosedTickets() {
+		return closedTickets;
+	}
+
+	public List<Ticket> getOpenedTickets() {
+		return tickets;
+	}
+
 	public Ticket getClosedTicketFromId(int id) {
 		return closedTickets.stream().filter(ticket -> ticket.getNumber() == id).findFirst().orElse(null);
 	}
