@@ -14,7 +14,7 @@ import java.util.UUID;
 public class Ticket {
 
 	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
-	public static final DateFormat formatter = new SimpleDateFormat(plugin.getConfig().getString("date-format"));
+	public static final DateFormat FORMATTER = new SimpleDateFormat(plugin.getConfig().getString("date-format"));
 
 	private final String uuid, message, randomId;
 	private final long creationDate;
@@ -63,12 +63,12 @@ public class Ticket {
 
 	public String getCreationDate() {
 		var date = new Date(creationDate);
-		return formatter.format(date);
+		return FORMATTER.format(date);
 	}
 
 	public String getClosingDate() {
 		var date = new Date(closingTime);
-		return formatter.format(date);
+		return FORMATTER.format(date);
 	}
 
 	public int getNumber() {

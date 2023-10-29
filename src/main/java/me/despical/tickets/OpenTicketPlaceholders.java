@@ -44,6 +44,11 @@ public class OpenTicketPlaceholders extends PlaceholderExpansion {
 		if (player == null) return null;
 
 		var split = id.split(":");
+
+		if (split[0].equals("opencount")) {
+			return String.valueOf(plugin.getTicketManager().getOpenedTickets().size());
+		}
+
 		var ticket = plugin.getTicketManager().getTicketFromId(Integer.parseInt(split[0]));
 
 		if (ticket == null || ticket.isClosed()) return "";
@@ -54,7 +59,6 @@ public class OpenTicketPlaceholders extends PlaceholderExpansion {
 			case "ticket" -> Strings.format(ticket.getMessage());
 			case "id" -> ticket.getRandomId();
 			case "mmddyyy" -> ticket.getCreationDate();
-			case "opencount" -> Integer.toString(plugin.getTicketManager().getOpenedTickets().size());
 			case "reply" -> {
 				var replyId = Integer.parseInt(split[2]);
 
@@ -70,7 +74,7 @@ public class OpenTicketPlaceholders extends PlaceholderExpansion {
 				}
 
 				if (_3rd.equalsIgnoreCase("timedate")) {
-					yield Strings.format(replyId <= ticket.getReplies().size() ? Ticket.formatter.format(Long.parseLong(ticket.getReplies().get(replyId - 1).split(":")[2])) : plugin.getConfig().getString("commands.no-date-for-that-reply"));
+					yield Strings.format(replyId <= ticket.getReplies().size() ? Ticket.FORMATTER.format(Long.parseLong(ticket.getReplies().get(replyId - 1).split(":")[2])) : plugin.getConfig().getString("commands.no-date-for-that-reply"));
 				}
 
 				yield null;
